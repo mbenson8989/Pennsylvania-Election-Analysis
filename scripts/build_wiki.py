@@ -25,7 +25,7 @@ home=f"""# Pennsylvania 2022 vs 2026 Governor Race: ΔG Method
 
 Method developed by Morissa Benson. It began with the **Cedar County audit in Nebraska** ([Cedar County Audit]({CEDAR})): a small county where Democratic governor votes rose while Democratic registration fell. This wiki applies the same county-by-county arithmetic to all 67 Pennsylvania counties using Pennsylvania Department of State numbers only. The Pennsylvania constant is computed from Pennsylvania data only; no other state's constant is reused.
 
-## Pages
+## Contents
 
 1. [Cedar County Audit]({CEDAR}): where the method began (Nebraska wiki)
 2. [Reverse Math]({REPO}/wiki/Reverse-Math): statewide, then all 67 counties (largest to smallest population), the Pennsylvania constant and regional constants
@@ -336,7 +336,7 @@ def fixtables(md):
     out=[]
     for line in md.split('\n'):
         if line.startswith('|'):
-            line=line.replace('***','**\\*')
+            line=re.sub(r'(?<!\\)\*\*\*',r'**\\*',line)
             line=re.sub(r'(?<![\\*])\*(?!\*)',r'\\*',line)
         out.append(line)
     return '\n'.join(out)
@@ -344,4 +344,16 @@ for name,body in (('Home',home),('Reverse-Math',rm),('Locked-Pennsylvania-Formul
     body=fixtables(body)
     open(W+name+'.md','w').write(body)
     assert CEDAR in body and 'UNOFFICIAL' in body
+SIDEBAR=f"""**Pennsylvania ΔG wiki**
+
+1. [Home]({REPO}/wiki/Home)
+2. [Cedar Audit (Nebraska)]({CEDAR})
+3. [Floor and Ceiling]({REPO}/wiki/Floor-and-Ceiling)
+4. [Reverse Math]({REPO}/wiki/Reverse-Math)
+5. [Locked Pennsylvania Formula]({REPO}/wiki/Locked-Pennsylvania-Formula)
+6. [Graphs]({REPO}/wiki/Graphs)
+
+\\*2026 figures unofficial.
+"""
+open(W+'_Sidebar.md','w').write(SIDEBAR)
 print('wiki ok', BUILT)

@@ -143,6 +143,30 @@ lf=f"""# Locked Pennsylvania Formula
 
 {CED}
 
+## Pennsylvania equation (final fitted)
+
+**Pennsylvania equation: ΔG = {sg(k['a'])} + {k['k']:.2f} × (Democratic registration-share drop, points)**
+
+This is the **locked (primary) Pennsylvania equation**: ordinary least squares across **all 67 counties**, the same all-county fit of ΔG on the registration-share drop used to set each state's own constant. Pennsylvania data only.
+
+| Term | Meaning | Units |
+|---|---|---|
+| ΔG | G 2026\\* − G 2022, where G = S − R (see [The equation](#the-equation)) | percentage points |
+| Registration-share drop | R 2022 − R 2026 (Democratic registered ÷ total registered × 100; positive = share fell) | percentage points |
+| {sg(k['a'])} (constant) | Expected ΔG in a county whose Democratic registration share did not change | percentage points |
+| {k['k']:.2f} (multiplier) | Added ΔG for each 1 point of registration-share drop | points of ΔG per point of drop |
+
+| Fit | Constant (95% CI) | Multiplier (95% CI) | n | R² |
+|---|---|---|---|---|
+| **Locked: all 67 counties** | **{sg(k['a'])}** ({k['a_ci'][0]:+.2f} to {k['a_ci'][1]:+.2f}) | **{k['k']:.2f}** ({k['k_ci'][0]:.2f} to {k['k_ci'][1]:.2f}) | 67 | {k['r2']:.2f} |
+| Sensitivity: 8 narrowed-out counties removed | {sg(kn['a'])} ({kn['a_ci'][0]:+.2f} to {kn['a_ci'][1]:+.2f}) | {kn['k']:.2f} ({kn['k_ci'][0]:.2f} to {kn['k_ci'][1]:.2f}) | {kn['n']} | {kn['r2']:.2f} |
+
+Narrowed-out counties: {', '.join(d['county'] for d in S['narrowed'])} (reasons on [Floor and Ceiling]({REPO}/wiki/Floor-and-Ceiling#counties-to-narrow-out)).
+
+**Regional variant (supplementary, not the locked equation):** one shared multiplier **{cs['k']:.2f}** with regional constants: {'; '.join(f"{rg} {sg(v)}" for rg,v in sorted(cs['intercepts'].items(), key=lambda x:-x[1]))} (R² {S['region_test']['r2_region_intercepts']:.2f}). See [Reverse Math, Step 4]({REPO}/wiki/Reverse-Math#step-4-regional-constants).
+
+**Worked example ({ce.county}):** registration-share drop {pk.reg_share_drop:.2f} → expected ΔG = {sg(k['a'])} + {k['k']:.2f} × {pk.reg_share_drop:.2f} = **{k['a']+k['k']*pk.reg_share_drop:+.2f}**; actual ΔG = **{sg(pk.dG)}\\*** (2026 unofficial), {pk.dG-(k['a']+k['k']*pk.reg_share_drop):+.2f} above the line. Computed from unrounded values.
+
 ## The equation
 
 - **S** (Democratic vote share) = Democratic governor votes ÷ governor-race total (all candidates) × 100. *The brief calls for total ballots cast; DOS publishes no county ballots-cast figure for the 2022 or 2026 general election, so the governor-race total stands in. Nebraska found the two denominators give nearly identical ΔG (r = 0.999).*

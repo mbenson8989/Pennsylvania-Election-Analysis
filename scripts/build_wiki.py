@@ -13,9 +13,9 @@ BANNER=("> **\\*2026 figures are UNOFFICIAL.** The Pennsylvania Department of St
  "Registration is the DOS Voter Registration Statistics for the Nov 8, 2022 Election and the Nov 3, 2026 General Election (certified). Votes are votes for the Democratic candidate, not a count of registered Democrats who voted. These pages measure a pattern; they make no claim about intent, fraud or cause.")
 CED=f"Method origin: the [Cedar County Audit (Nebraska)]({CEDAR})."
 def related(*pages): return '\n---\n**Related:** '+' · '.join(f'[{a}]({REPO}/wiki/{b})' for a,b in pages)+f' · [Cedar County Audit]({CEDAR})\n'
-def img(f,cap): return f'![{cap}]({RAWU}{f})\n\n*{cap}*\n'
+def img(f,cap): return f'![{cap.replace("*","")}]({RAWU}{f})\n\n*{cap.replace("*",chr(92)+"*")}*\n'
 fn_fc=f'PA_deltaG_by_county_population_order_-_floor_{fl.county}_ceiling_{ce.county}.png'
-POP='Population: U.S. Census Bureau Vintage 2025 county estimates, July 1, 2025 (co-est2025-alldata.csv); used for sort order only.'
+POP='U.S. Census Bureau Vintage 2025 county estimates, July 1, 2025 (co-est2025-alldata.csv); used for sort order only.'
 # ---------------- HOME ----------------
 home=f"""# Pennsylvania 2022 vs 2026 Governor Race: ΔG Method
 
@@ -129,7 +129,7 @@ Working regions for this test (a grouping chosen for this analysis, not an offic
 
 ## All 67 counties (largest to smallest population)
 
-{POP} Res. = residual (points); Implied = implied injected/offset votes; Gap = gap in votes.
+Population: {POP} Res. = residual (points); Implied = implied injected/offset votes; Gap = gap in votes.
 
 | County | Population | Region | Dem reg 2022 → 2026 | Dem reg share % | Reg-share drop | Dem gov votes 2022 → 2026\\* | Race total 2022 → 2026\\* | S % 2022 → 2026\\* | G 2022 | G 2026\\* | ΔG\\* | Res.\\* | Implied\\* | Gap\\* |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -331,7 +331,17 @@ gr=f"""# Graphs
 
 {img('PA_over_ballot_check_dem_plus_rep.png','(D + R) ÷ governor-race total (top) and ÷ registered voters (bottom), both years. No county crosses 100%.')}
 {related(('Reverse Math','Reverse-Math'),('Floor and Ceiling','Floor-and-Ceiling'),('Locked Pennsylvania Formula','Locked-Pennsylvania-Formula'),('Home','Home'))}"""
+import re
+def fixtables(md):
+    out=[]
+    for line in md.split('\n'):
+        if line.startswith('|'):
+            line=line.replace('***','**\\*')
+            line=re.sub(r'(?<![\\*])\*(?!\*)',r'\\*',line)
+        out.append(line)
+    return '\n'.join(out)
 for name,body in (('Home',home),('Reverse-Math',rm),('Locked-Pennsylvania-Formula',lf),('Floor-and-Ceiling',fc),('Graphs',gr)):
+    body=fixtables(body)
     open(W+name+'.md','w').write(body)
     assert CEDAR in body and 'UNOFFICIAL' in body
 print('wiki ok', BUILT)

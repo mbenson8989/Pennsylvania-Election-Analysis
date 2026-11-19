@@ -1,0 +1,41 @@
+{
+ "check": "PDF cell-by-cell vs RAW DOS files (t5u)",
+ "pdf": "Pennsylvania_67_County_Democratic_Registration_and_Vote_Change.pdf",
+ "pdf_pages": 4,
+ "rows_per_table": {
+  "table1": 68,
+  "table2": 68
+ },
+ "cells_checked": 1360,
+ "matches": 1360,
+ "mismatches": [],
+ "exact_half_rounding_cases": [],
+ "county_sort_order_matches_raw": true,
+ "statewide_checks": {
+  "RegD22 county sum = DOS 2022 VR Total row": true,
+  "RegTot22 county sum = DOS 2022 VR Total row": true,
+  "RegD26 county sum = DOS 2026 VR Total row": true,
+  "RegTot26 county sum = DOS 2026 VR Total row": true,
+  "D22 county sum = DOS 2022 statewide official (GetOfficeData)": true,
+  "T22 county sum = DOS 2022 statewide official (GetOfficeData)": true
+ },
+ "statewide_sums_from_raw": {
+  "RD22": 4046694,
+  "RT22": 8873144,
+  "RD26": 3887465,
+  "RT26": 9052695,
+  "D22": 3031137,
+  "T22": 5366179,
+  "D26": 3039717,
+  "T26": 5019054
+ },
+ "note_2026_statewide": "DOS statewide 2026 governor endpoint returned no data (2026 UNOFFICIAL, status U); 2026 statewide = sum of 67 DOS county results.",
+ "raw_files": [
+  "enr_2022G_governor_countybreak.json",
+  "enr_2026G_governor_countybreak.json",
+  "dos_vr_2022_general_election.pdf",
+  "dos_vr_2026_general_election_certified.pdf",
+  "enr_2022G_governor_statewide.json"
+ ],
+ "CLEAN": true
+}

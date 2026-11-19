@@ -1,0 +1,19 @@
+{
+ "cells_checked": 1360,
+ "mismatches": [],
+ "rows_section1": 68,
+ "rows_section2": 68,
+ "sort_order_ok": true,
+ "statewide_vs_column_sums": true,
+ "statewide_2026_votes_vs_enr_county_sum": {
+  "D26": 3039717,
+  "T26": 5019054,
+  "enr": {
+   "D": 3039717,
+   "R": 1914345,
+   "O": 64992,
+   "T": 5019054
+  }
+ },
+ "pdf_pages": 4
+}

@@ -32,6 +32,7 @@ Method developed by Morissa Benson. It began with the **Cedar County audit in Ne
 3. [Locked Pennsylvania Formula]({REPO}/wiki/Locked-Pennsylvania-Formula): the equation, with a blank fill-in template and a worked example
 4. [Floor and Ceiling]({REPO}/wiki/Floor-and-Ceiling): floor and ceiling counties, the Texas-style over-ballot check, counties to narrow out
 5. [Graphs]({REPO}/wiki/Graphs): slope chart, stacked bars, ΔG by population order, constant scatter, ceiling/floor bars, over-ballot check
+6. [Pennsylvania County PDF Information]({REPO}/wiki/Pennsylvania-County-PDF-Information): all 67 counties in one downloadable PDF (registration, votes and ballots, 2022 vs 2026\\*)
 
 ## Statewide at a glance
 
@@ -364,7 +365,53 @@ def fixtables(md):
             line=re.sub(r'(?<![\\*])\*(?!\*)',r'\\*',line)
         out.append(line)
     return '\n'.join(out)
-for name,body in (('Home',home),('Reverse-Math',rm),('Locked-Pennsylvania-Formula',lf),('Floor-and-Ceiling',fc),('Graphs',gr)):
+PCK=json.load(open('/workspace/pa/verification/pdf_cell_check_raw.json')); assert PCK['CLEAN']
+PDFN='Pennsylvania_67_County_Democratic_Registration_and_Vote_Change.pdf'
+import subprocess as _sp
+NP=int([l.split()[-1] for l in _sp.check_output(['pdfinfo','/workspace/pa/pdf/'+PDFN]).decode().splitlines() if l.startswith('Pages:')][0])
+top=t.assign(sh=t.RegD26/t.RegTot26).sort_values(['sh','county'],ascending=[False,True]).iloc[0]
+pdfp=f"""# Pennsylvania County PDF Information
+
+{BANNER}
+
+{CED}
+
+This {NP}-page PDF covers all 67 Pennsylvania counties, 2022 vs 2026\\*, modeled on Nebraska's 93-county summary PDF. For each county it lists Democratic registration, Democratic governor votes and total ballots for both years, with each change as a number and a percent, plus the Democratic share of ballots and of registration. Counties are sorted by **2026 Democratic share of registration, highest first** ({top.county} first, {100*top.RegD26/top.RegTot26:.1f}%). A **Statewide total** row closes each table. The residual and reverse-math results are on [Reverse Math]({REPO}/wiki/Reverse-Math) and [Floor and Ceiling]({REPO}/wiki/Floor-and-Ceiling).
+
+**[Download the 67-County PDF (raw)]({RAWU}pdf/{PDFN})** · [View the file on GitHub]({REPO}/blob/main/pdf/{PDFN})
+
+## Columns
+
+**Pages 1–2: registration, votes and ballots**
+
+| Column | Meaning |
+|---|---|
+| Dem Reg Share 2026 % | Democratic registered voters ÷ all registered voters, Nov 3, 2026 (the sort key) |
+| Dem Reg 2022 (Nov 8) / Dem Reg 2026 (Nov 3) | Democratic registered voters, DOS election statistics |
+| Reg Change # / Reg Change % | 2026 minus 2022, and that change as a percent of 2022 |
+| Dem Gov Votes 2022 / 2026\\* | Votes for the Democratic governor candidate (Shapiro both years) |
+| Vote Change # / Vote Change % (on 2022 base) | 2026\\* minus 2022, and as a percent of 2022 |
+| Total Ballots 2022 / 2026\\* | **Governor-race total** (all governor candidates); DOS publishes no county total ballots cast for either election |
+| Ballot Change # / Ballot Change % | 2026\\* minus 2022, and as a percent of 2022 |
+
+Row shading: blue = Democratic registration rose; orange = Democratic governor votes fell; purple = both (Snyder).
+
+**Pages 3–4: shares**
+
+| Column | Meaning |
+|---|---|
+| Dem Share of Ballots 2022 % / 2026\\* % | Democratic governor votes ÷ total ballots (governor-race total) |
+| Change (pts) | 2026\\* share minus 2022 share, percentage points |
+| Dem Share of Registration 2022 % / 2026 % | Democratic registered ÷ all registered |
+| Total Registered 2022 (Nov 8) / 2026 (Nov 3) | All registered voters |
+
+## Sources
+
+- Votes: PA Department of State election returns (electionreturns.pa.gov); 2022 official, 2026 **UNOFFICIAL** (status "U", checked Nov 19, 2026 5:01 PM CST).
+- Registration: DOS Voter Registration Statistics, Nov 8, 2022 Election and Nov 3, 2026 General Election (certified).
+- **Cell-by-cell check against the raw DOS files:** before publishing, a separate script re-parsed the raw DOS files (results-site county files and the two registration PDFs), recomputed every figure, read every cell back out of this PDF, and compared them at the printed decimal: **{PCK['matches']:,} of {PCK['cells_checked']:,} cells matched, {len(PCK['mismatches'])} mismatches**; county sort order and statewide totals (equal to the DOS registration Total rows and the DOS 2022 statewide official totals) also checked. Report: [verification/pdf_cell_check_raw.json]({REPO}/blob/main/verification/pdf_cell_check_raw.json).
+{related(('Home','Home'),('Floor and Ceiling','Floor-and-Ceiling'),('Reverse Math','Reverse-Math'),('Locked Pennsylvania Formula','Locked-Pennsylvania-Formula'),('Graphs','Graphs'))}"""
+for name,body in (('Pennsylvania-County-PDF-Information',pdfp),('Home',home),('Reverse-Math',rm),('Locked-Pennsylvania-Formula',lf),('Floor-and-Ceiling',fc),('Graphs',gr)):
     body=fixtables(body)
     open(W+name+'.md','w').write(body)
     assert CEDAR in body and 'UNOFFICIAL' in body
@@ -376,6 +423,7 @@ SIDEBAR=f"""**Pennsylvania ΔG wiki**
 4. [Reverse Math]({REPO}/wiki/Reverse-Math)
 5. [Locked Pennsylvania Formula]({REPO}/wiki/Locked-Pennsylvania-Formula)
 6. [Graphs]({REPO}/wiki/Graphs)
+7. [Pennsylvania County PDF Information]({REPO}/wiki/Pennsylvania-County-PDF-Information)
 
 \\*2026 figures unofficial.
 """

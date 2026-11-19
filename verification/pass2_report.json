@@ -1,0 +1,169 @@
+{
+ "pass": 2,
+ "counties": 67,
+ "figures_checked": 2077,
+ "matches": 2077,
+ "mismatches": [],
+ "statewide_checks": [
+  {
+   "item": "VR 2022 county sum (D,R,Total) vs DOS Total row",
+   "expected": [
+    4046694,
+    3497126,
+    8873144
+   ],
+   "got": [
+    4046694,
+    3497126,
+    8873144
+   ],
+   "ok": true
+  },
+  {
+   "item": "VR 2026 county sum (D,R,Total) vs DOS Total row",
+   "expected": [
+    3887465,
+    3639404,
+    9052695
+   ],
+   "got": [
+    3887465,
+    3639404,
+    9052695
+   ],
+   "ok": true
+  },
+  {
+   "item": "ENR 2026 GetElectionList RegisteredVotes vs DOS 2026 VR PDF Total",
+   "expected": 9052746,
+   "got": 9052695,
+   "ok": false
+  }
+ ],
+ "info": {
+  "enr_status_2022": "O",
+  "enr_status_2026": "U",
+  "enr_ballots_counted_2026_statewide": 5061731,
+  "enr_ballots_counted_2022_statewide": 0,
+  "enr_registered_2022_statewide": 8873365,
+  "vr_pdf_2022_total": 8873144,
+  "statewide_2026_DplusR": 4954062,
+  "statewide_2026_race_total": 5019054,
+  "vote_method_component_mismatches_2022": [],
+  "vote_method_component_mismatches_2026": [],
+  "candidate_rows": {
+   "2022": 335,
+   "2026": 201
+  }
+ },
+ "cross_source_2022_ENR_vs_bulk_precinct_returns": [
+  {
+   "county": "LAWRENCE",
+   "field": "D",
+   "ENR_official": 16023,
+   "bulk_precinct_file": 15918,
+   "diff": 105
+  },
+  {
+   "county": "LAWRENCE",
+   "field": "R",
+   "ENR_official": 19611,
+   "bulk_precinct_file": 19471,
+   "diff": 140
+  },
+  {
+   "county": "LAWRENCE",
+   "field": "O",
+   "ENR_official": 660,
+   "bulk_precinct_file": 656,
+   "diff": 4
+  },
+  {
+   "county": "WARREN",
+   "field": "O",
+   "ENR_official": 329,
+   "bulk_precinct_file": 328,
+   "diff": 1
+  }
+ ],
+ "cross_source_2022_VRpdf_vs_bulk_precinct_VR": [
+  {
+   "county": "BUCKS",
+   "VR_pdf": [
+    204177,
+    196510,
+    481838
+   ],
+   "bulk_precinct_VR": [
+    205453,
+    198443,
+    485687
+   ]
+  },
+  {
+   "county": "CUMBERLAND",
+   "VR_pdf": [
+    64310,
+    90968,
+    186473
+   ],
+   "bulk_precinct_VR": [
+    64281,
+    90923,
+    186426
+   ]
+  },
+  {
+   "county": "JUNIATA",
+   "VR_pdf": [
+    2954,
+    9649,
+    14034
+   ],
+   "bulk_precinct_VR": [
+    2953,
+    9650,
+    14033
+   ]
+  },
+  {
+   "county": "MONTGOMERY",
+   "VR_pdf": [
+    304890,
+    205496,
+    607301
+   ],
+   "bulk_precinct_VR": [
+    305559,
+    205913,
+    608563
+   ]
+  },
+  {
+   "county": "SNYDER",
+   "VR_pdf": [
+    4924,
+    14887,
+    22518
+   ],
+   "bulk_precinct_VR": [
+    4919,
+    15061,
+    22715
+   ]
+  },
+  {
+   "county": "SOMERSET",
+   "VR_pdf": [
+    12435,
+    31488,
+    48845
+   ],
+   "bulk_precinct_VR": [
+    12751,
+    32203,
+    49975
+   ]
+  }
+ ]
+}

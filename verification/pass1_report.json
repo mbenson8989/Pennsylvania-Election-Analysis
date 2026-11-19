@@ -1,0 +1,16 @@
+{
+ "pass": 1,
+ "counties": 67,
+ "figures_per_county": 31,
+ "figures_checked": 2077,
+ "matches": 2077,
+ "mismatches": [],
+ "enr_counties": {
+  "22": 67,
+  "26": 67
+ },
+ "vr_rows_parsed": {
+  "22": 67,
+  "26": 67
+ }
+}

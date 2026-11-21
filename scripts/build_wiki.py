@@ -138,6 +138,7 @@ Population: {POP} Res. = residual (points); Implied = implied injected/offset vo
 {related(('Locked Pennsylvania Formula','Locked-Pennsylvania-Formula'),('Floor and Ceiling','Floor-and-Ceiling'),('Graphs','Graphs'),('Home','Home'))}"""
 # ---------------- LOCKED FORMULA ----------------
 pk=t[t.county==ce.county].iloc[0]
+SF=json.load(open('/workspace/pa/verification/share_fit_check.json')); phl=t[t.county=='Philadelphia'].iloc[0]
 lf=f"""# Locked Pennsylvania Formula
 
 {BANNER}
@@ -168,6 +169,29 @@ Narrowed-out counties: {', '.join(d['county'] for d in S['narrowed'])} (reasons 
 
 **Worked example ({ce.county}):** registration-share drop {pk.reg_share_drop:.2f} → expected ΔG = {sg(k['a'])} + {k['k']:.2f} × {pk.reg_share_drop:.2f} = **{k['a']+k['k']*pk.reg_share_drop:+.2f}**; actual ΔG = **{sg(pk.dG)}\\*** (2026 unofficial), {pk.dG-(k['a']+k['k']*pk.reg_share_drop):+.2f} above the line. Computed from unrounded values.
 
+## Pennsylvania share equation (S = m × D/100 + b)
+
+The share version of the locked formula, fitted by ordinary least squares across **all 67 counties**, Pennsylvania DOS data only:
+
+- **D** = Democratic registration share, percent (0–100): Democratic registered ÷ total registered × 100 (DOS election-day registration statistics)
+- **S** = surplus, percentage points: Democratic governor vote share (Democratic votes ÷ governor-race total × 100) minus D. This is the same number as **G** below.
+
+**2026\\* Pennsylvania share equation: S = {SF['2026']['m']:.2f} × (D/100) {SF['2026']['b']:+.2f}**
+
+**2022 Pennsylvania share equation: S = {SF['2022']['m']:.2f} × (D/100) {SF['2022']['b']:+.2f}**
+
+| Year | Multiplier m | Offset b | R² | Mean absolute residual | Largest residual | Counties within ±2 / ±5 pts | n |
+|---|---|---|---|---|---|---|---|
+| 2022 (official) | {SF['2022']['m']:.2f} | {SF['2022']['b']:+.2f} | {SF['2022']['r2']:.2f} | {SF['2022']['mean_abs_resid']:.2f} pts | {SF['2022']['max_resid_county']} {SF['2022']['max_resid']:+.2f} | {SF['2022']['within_2pts']} / {SF['2022']['within_5pts']} | 67 |
+| 2026\\* (unofficial) | {SF['2026']['m']:.2f} | {SF['2026']['b']:+.2f} | {SF['2026']['r2']:.2f} | {SF['2026']['mean_abs_resid']:.2f} pts | {SF['2026']['max_resid_county']} {SF['2026']['max_resid']:+.2f} | {SF['2026']['within_2pts']} / {SF['2026']['within_5pts']} | 67 |
+
+**Worked example (Philadelphia, 2026\\*):** D = {phl.Rsh26:.2f} → predicted S = {SF['2026']['m']:.2f} × {phl.Rsh26/100:.4f} {SF['2026']['b']:+.2f} = **{SF['2026']['m']*phl.Rsh26/100+SF['2026']['b']:+.2f}**; actual S = **{phl.G26:+.2f}\\***; residual {phl.G26-(SF['2026']['m']*phl.Rsh26/100+SF['2026']['b']):+.2f}. Computed from unrounded values.
+
+How well it fits: registration share explains about {100*SF['2022']['r2']:.0f}% (2022) and {100*SF['2026']['r2']:.0f}% (2026\\*) of the county-to-county differences in S, so the line is a weak predictor for any single county; the typical county sits about 3 points off it. Fayette is the farthest below the line in both years. The line moved up and steepened from 2022 to 2026\\* (the ΔG equation above measures that change directly).
+
+Verified two ways: an independent script re-parsed the raw DOS files and refit the line with exact arithmetic; it matches the main analysis (statsmodels on the verified county table) to within 1e-9 for m, b and R² in both years, and every county residual matches the values behind the charts. Report: [verification/share_fit_check.json]({REPO}/blob/main/verification/share_fit_check.json).
+
+{img('PA_Share_Equation_S_vs_D_Forward_Fit.png','S against D for all 67 counties with the fitted share line, 2022 (left) and 2026* (right); largest residual (Fayette) labeled.')}
 ## The equation
 
 - **S** (Democratic vote share) = Democratic governor votes ÷ governor-race total (all candidates) × 100. *The brief calls for total ballots cast; DOS publishes no county ballots-cast figure for the 2022 or 2026 general election, so the governor-race total stands in. Nebraska found the two denominators give nearly identical ΔG (r = 0.999).*
@@ -355,6 +379,9 @@ gr=f"""# Graphs
 ## 7. Texas-style over-ballot check
 
 {img('PA_over_ballot_check_dem_plus_rep.png','(D + R) ÷ governor-race total (top) and ÷ registered voters (bottom), both years. No county crosses 100%.')}
+## 8. Share equation (S vs D)
+
+{img('PA_Share_Equation_S_vs_D_Forward_Fit.png',f"S = m × (D/100) + b for all 67 counties: 2022 S = {SF['2022']['m']:.2f} × (D/100) {SF['2022']['b']:+.2f}; 2026* S = {SF['2026']['m']:.2f} × (D/100) {SF['2026']['b']:+.2f}.")}
 {related(('Reverse Math','Reverse-Math'),('Floor and Ceiling','Floor-and-Ceiling'),('Locked Pennsylvania Formula','Locked-Pennsylvania-Formula'),('Home','Home'))}"""
 import re
 def fixtables(md):

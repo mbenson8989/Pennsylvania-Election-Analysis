@@ -64,3 +64,15 @@ ax.bar(xs,s.S22,color='#4c78a8',label='2022 Democratic share'); ax.bar(xs,s.dS,b
 ax.set_xticks(xs); ax.set_xticklabels(s.county,rotation=90,fontsize=7); ax.set_title('All 67 counties sorted by 2022 Democratic vote share; orange = 2026* gain'); ax.legend(fontsize=8)
 foot(fig); fig.tight_layout(rect=(0,.02,1,1)); fig.savefig(O+'PA_governor_2022_Dem_share_vs_gain_bar_chart.png',dpi=120); plt.close()
 print(sorted(f for f in __import__('os').listdir(O) if f.endswith('.png')))
+# 9 SHARE version forward fit: S = m*(D/100)+b, both years (t6u)
+o=json.load(open('/workspace/pa/verification/share_fit_check.json'))
+fig,axs=plt.subplots(1,2,figsize=(15,6.5),sharey=True)
+for ax,(y,G,R) in zip(axs,(('2022','G22','Rsh22'),('2026','G26','Rsh26'))):
+    f=o[y]; ax.scatter(t[R],t[G],c=[cols[r] for r in t.region],s=np.clip(np.sqrt(t.population_2025)/8,10,200),edgecolor='k',lw=.3,alpha=.8)
+    xx=np.linspace(0,85,10); ax.plot(xx,f['m']*xx/100+f['b'],'k-',label=f"S = {f['m']:.2f} × (D/100) {f['b']:+.2f}   (R² {f['r2']:.2f}, mean |resid| {f['mean_abs_resid']:.2f} pts)")
+    mc=f['max_resid_county']; r=t[t.county==mc].iloc[0]; ax.annotate(f"{mc} (resid {f['max_resid']:+.2f})",(r[R],r[G]),xytext=(5,-12),textcoords='offset points',fontsize=8)
+    for c in ('Philadelphia','Fulton','Pike'):
+        rr=t[t.county==c].iloc[0]; ax.annotate(c,(rr[R],rr[G]),xytext=(4,4),textcoords='offset points',fontsize=7)
+    ax.axhline(0,color='grey',lw=.5); ax.set_xlabel('D = Democratic registration share (%)'); ax.set_title(f"{y}{'* (unofficial)' if y=='2026' else ' (official)'}"); ax.legend(fontsize=8,loc='lower right')
+axs[0].set_ylabel('S = surplus = Dem vote share − D (points)'); fig.suptitle('Pennsylvania share equation S = m × (D/100) + b, all 67 counties (PA DOS data only)')
+foot(fig); fig.tight_layout(rect=(0,.02,1,1)); fig.savefig(O+'PA_Share_Equation_S_vs_D_Forward_Fit.png',dpi=120); plt.close()
